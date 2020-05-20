@@ -111,7 +111,7 @@ const go = () => {
         res.status(500).send(err.stack);
     });
 
-    app.listen(3030);
+    app.listen(3040); // TODO allow PORT to override
 };
 
 go();

@@ -79,15 +79,6 @@ type Props = {
     contributionsServiceUrl: string;
 };
 
-interface InitAutomatJsConfig {
-    epicRoot: HTMLElement | null;
-    onReminderOpen?: Function;
-}
-
-interface AutomatJsCallback {
-    buttonCopyAsString: string;
-}
-
 // TODO specify return type (need to update client to provide this first)
 const buildPayload = (props: Props) => {
     return {
@@ -119,12 +110,12 @@ const buildPayload = (props: Props) => {
     };
 };
 
-type SlotState = {
+/* type SlotState = {
     html: string;
     css: string;
     js: string;
     meta: TestMeta;
-};
+}; */
 
 const MemoisedInner = ({
     isSignedIn,
@@ -138,9 +129,7 @@ const MemoisedInner = ({
     tags,
     contributionsServiceUrl,
 }: Props) => {
-    const [data, setData] = useState<{
-        slot?: SlotState;
-    }>();
+    const [component, setComponent] = useState<Element>();
 
     // Debounce the IntersectionObserver callback
     // to ensure the Slot is seen for at least 200ms before registering the view
@@ -153,46 +142,20 @@ const MemoisedInner = ({
         debounce,
     ) as HasBeenSeen;
 
-    const slotRoot = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
-        const contributionsPayload = buildPayload({
-            isSignedIn,
-            countryCode,
-            contentType,
-            sectionName,
-            shouldHideReaderRevenue,
-            isMinuteArticle,
-            isPaidContent,
-            tags,
-            contributionsServiceUrl,
-            isSensitive,
-        });
-        getBodyEnd(contributionsPayload, `${contributionsServiceUrl}/epic`)
-            .then(checkForErrors)
-            .then(response => response.json())
-            .then(json => {
-                setData({
-                    slot: {
-                        html: json.data.html,
-                        css: json.data.css,
-                        js: json.data.js,
-                        meta: json.data.meta,
-                    },
-                });
-
-                sendOphanEpicEvent('INSERT', json.data.meta);
+        // fetch Count component
+        const count = import(
+            /* webpackIgnore: true */ 'http://localhost:3030/count.js'
+        );
+        count
+            .then(module => {
+                setComponent(module.component(React));
             })
-            .catch(error =>
-                window.guardian.modules.sentry.reportError(
-                    error,
-                    'slot-body-end',
-                ),
-            );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // only ever call once (we'd rather fail then call the API multiple times)
+            .catch(error => console.log('count - error is: ' + error));
+    });
 
-    useEffect(() => {
+    // Note would want to return meta as part of the JS module?
+    /*     useEffect(() => {
         // This won't be true until we've successfully fetched the data and
         // rendered the epic (because of how we're wiring up the ref below). And
         // because of the way the hook behaves, it'll only ever go from false ->
@@ -209,53 +172,12 @@ const MemoisedInner = ({
     // The 'data' object used in the hook never changes after 'hasBeenSeen'
     // is set to true, so we're intentionally leaving it out of the deps array.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasBeenSeen]);
+    }, [hasBeenSeen]); */
 
-    // Rely on useEffect to run a function that initialises the slot once it's
-    // been injected in the DOM.
-    useEffect(() => {
-        if (data && data.slot && data.slot.js) {
-            // This should only be called once
-            try {
-                // eslint-disable-next-line no-eval
-                window.eval(data.slot.js);
-                if (typeof window.initAutomatJs === 'function') {
-                    const initAutomatJsConfig: InitAutomatJsConfig = {
-                        epicRoot: slotRoot.current,
-                        onReminderOpen: (callbackParams: AutomatJsCallback) => {
-                            const { buttonCopyAsString } = callbackParams;
-                            // Track two separate Open events when the Reminder
-                            // button is clicked
-                            sendOphanReminderEvent(
-                                'precontribution-reminder-prompt-clicked',
-                            );
-                            sendOphanReminderEvent(
-                                `precontribution-reminder-prompt-copy-${buttonCopyAsString}`,
-                            );
-                        },
-                    };
-                    window.initAutomatJs(initAutomatJsConfig);
-                }
-            } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error(error);
-                window.guardian.modules.sentry.reportError(
-                    error,
-                    'slot-body-end',
-                );
-            }
-        }
-    }, [data]);
-
-    if (data && data.slot) {
+    if (component) {
         return (
             <div ref={setNode} className={wrapperMargins}>
-                {data.slot.css && <style>{data.slot.css}</style>}
-                <div
-                    ref={slotRoot}
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: data.slot.html }}
-                />
+                {component}
             </div>
         );
     }

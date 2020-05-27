@@ -672,7 +672,7 @@ declare module 'minify-css-string' {
     const minifyCSSString: any;
     export default minifyCSSString;
 }
-declare module 'storybook-chromatic/isChromatic';
+declare module 'chromatic/isChromatic';
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 // ------------------------------------- //

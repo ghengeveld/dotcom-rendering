@@ -1,16 +1,13 @@
-import isChromatic from 'storybook-chromatic/isChromatic';
-
-import fetchMock from 'fetch-mock';
-import { configure, addParameters } from '@storybook/react';
+import 'reset-css';
 
 import { sharecount } from '@root/fixtures/article';
 import { commentCount } from '@root/fixtures/commentCounts';
+import { Lazy } from '@root/src/web/components/Lazy';
+import { addParameters, configure } from '@storybook/react';
+import isChromatic from 'chromatic/isChromatic';
+import fetchMock from 'fetch-mock';
 
 import { defaults } from './default-css';
-
-import 'reset-css';
-
-import { Lazy } from '@root/src/web/components/Lazy';
 
 // Prevent components being lazy rendered when we're taking Chromatic snapshots
 Lazy.disabled = isChromatic();

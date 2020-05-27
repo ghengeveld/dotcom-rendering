@@ -15,6 +15,7 @@ type Props = {
 // We apply sticky positioning and z-indexes, the stickAdWrapper and headerWrapper
 // classes are tightly coupled.
 const stickyAdWrapper = css`
+    display: none;
     background-color: white;
     border-bottom: 0.0625rem solid ${border.secondary};
     position: sticky;

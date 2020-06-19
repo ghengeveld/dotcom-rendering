@@ -29,7 +29,7 @@ const meta = css`
         padding-left: 20px;
         padding-right: 20px;
     }
-    padding-top: 2px;
+    padding-top: 8px;
 `;
 
 const metaFlex = css`

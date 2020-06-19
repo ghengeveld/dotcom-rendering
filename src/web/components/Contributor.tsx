@@ -1,13 +1,10 @@
-import React from 'react';
-import { css } from 'emotion';
-
+import TwitterIcon from '@frontend/static/icons/twitter.svg';
+import { BylineLink } from '@frontend/web/components/BylineLink';
 import { neutral, text } from '@guardian/src-foundations/palette';
 import { headline, textSans } from '@guardian/src-foundations/typography';
 import { pillarPalette } from '@root/src/lib/pillars';
-
-import { BylineLink } from '@frontend/web/components/BylineLink';
-
-import TwitterIcon from '@frontend/static/icons/twitter.svg';
+import { css } from 'emotion';
+import React from 'react';
 
 const twitterHandle = css`
     ${textSans.xsmall()};

@@ -1,9 +1,8 @@
-import React from 'react';
-
-import { css } from 'emotion';
+import { visuallyHidden } from '@guardian/src-foundations/accessibility';
 import { text } from '@guardian/src-foundations/palette';
 import { textSans } from '@guardian/src-foundations/typography';
-import { visuallyHidden } from '@guardian/src-foundations/accessibility';
+import { css } from 'emotion';
+import React from 'react';
 
 const captionFont = css`
     ${textSans.xsmall()};

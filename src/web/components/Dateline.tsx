@@ -13,7 +13,7 @@ const dateline = css`
     ${captionFont};
 
     padding-top: 2px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 `;
 
 const description = css`

@@ -32,6 +32,7 @@ const bylineStyle = (pillar: Pillar) => css`
     color: ${pillarPalette[pillar].main};
     padding-bottom: 8px;
     font-style: italic;
+    margin-top: 8px;
 
     a {
         font-weight: 700;
